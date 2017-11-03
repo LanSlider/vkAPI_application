@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,7 @@ using System.Windows.Shapes;
 using VkNet;
 using VkNet.Enums.Filters;
 using VkNet.Exception;
+using VkNet.Enums;
 
 namespace VK_Data
 {
@@ -23,11 +25,13 @@ namespace VK_Data
     /// </summary>
     /// 
 
-    class VK
+    public class VK
     {
         public int appID { get; set; }
         public string email { get; set; }
         public string password { get; set; }
+        public long userID { get; set; }
+        public string error { get; set; }
         public Settings setting { get; set; }
 
         public VK()
@@ -38,28 +42,88 @@ namespace VK_Data
 
         VkApi vkAPI = new VkApi();
         
-        public void Auth()
+        public string Auth()
         {
             try
             {
                 vkAPI.Authorize(appID, email, password, setting);
-                
+                error = "";
+                return error;
             }
-            catch(VkApiAuthorizationException)
+            catch (VkApiAuthorizationException)
             {
-                MessageBox.Show("Неверные данные!");
+                error = "Неверные данные авторизации";
+                return error;
+            }      
+        }
+
+        public string checkGetFriend()
+        {
+            try
+            {
+                var tmp = vkAPI.Friends.Get(userID, ProfileFields.FirstName | ProfileFields.LastName);
+                error = "";
+                return error;
+
+            }
+            catch (VkApiException)
+            {
+                error = "Пользователя с таким ID не существует";
+                return error;
             }
         }
 
-        public void Status()
+        public ReadOnlyCollection<VkNet.Model.User> GetFriend()
         {
-            Console.WriteLine(vkAPI.Status);
+            var temp = vkAPI.Friends.Get(userID, ProfileFields.FirstName | ProfileFields.LastName);
+            return temp;
         }
 
-        
+        public string checkGetInfoUser()
+        {
+            try
+            {
+                var user = vkAPI.Users.Get(userID, ProfileFields.All);
+                error = "";
+                return error;
 
+            }
+            catch (VkApiException)
+            {
+                error = "Ошибка получения данных пользователя";
+                return error;
+            }
+        }
 
+        public VkNet.Model.User GetInfoUser()
+        {
+            var user = vkAPI.Users.Get(userID, ProfileFields.All);
+            return user;
+        }
 
+        public string checkGetWallUser()
+        {
+            try
+            {
+                int i = 3;
+                var user = vkAPI.Wall.Get(userID, out i);
+                error = "";
+                return error;
+
+            }
+            catch (VkApiException)
+            {
+                error = "Ошибка получения стены пользователя";
+                return error;
+            }
+        }
+
+        public ReadOnlyCollection<VkNet.Model.Post> GetWallUser()
+        {
+            int tmp = 3;
+            var wall = vkAPI.Wall.Get(userID, out tmp);
+            return wall;
+        }
 
     }
 
@@ -68,32 +132,51 @@ namespace VK_Data
     {
         VK vk = new VK();
         
-
         public MainWindow()
-        {
-            
-            
+        {  
             InitializeComponent();
-
-        }
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            
-            
 
         }
 
         private void Auth_Click(object sender, RoutedEventArgs e)
         {
             if (Login.IsEnabled)
-            {
-                vk.email = Login.Text;
-                vk.password = Password.Password;
-                vk.Auth();
-                Login.IsEnabled = false;
-                Password.IsEnabled = false;
-                Auth.Content = "Выйти";
+            {   
+                if((Login.Text != "") && (Login.Text != "Логин"))
+                {
+                    Login.Background = Brushes.White;
+                    if ((Password.Password != "") && (Password.Password != "Пароль"))
+                    {
+                        vk.email = Login.Text;
+                        vk.password = Password.Password;
+                        Error.Content = vk.Auth();                        
+                        if (vk.error != "Неверные данные авторизации")
+                        {      
+                            Password.Background = Brushes.White;
+                            Login.IsEnabled = false;
+                            Password.IsEnabled = false;
+                            Button_ID.IsEnabled = true;
+                            Auth.Content = "Выйти";
+                        }
+                        else
+                        {
+                            Login.Text = "";
+                            Password.Password = "";
+                            
+                        }
+                    }
+                    else
+                    {
+                        Password.Password = "Пароль";
+                        Password.Background = Brushes.SkyBlue;
+                    }
+                } 
+                else
+                {
+                    Login.Text = "Логин";
+                    Login.Background = Brushes.SkyBlue;
+                }
+                
             }
             else
             {
@@ -101,6 +184,7 @@ namespace VK_Data
                 Password.Password = "";
                 Login.IsEnabled = true;
                 Password.IsEnabled = true;
+                Button_ID.IsEnabled = false;
                 Auth.Content = "Войти";
             }
         }
@@ -114,5 +198,63 @@ namespace VK_Data
         {
             Password.Password = "";
         }
+
+        private void Button_ID_Click(object sender, RoutedEventArgs e)
+        {
+            long temp;
+            if ((ID_User.Text != "") && (long.TryParse(ID_User.Text, out temp)))
+            {
+                vk.userID = temp;
+                Error.Content =  vk.checkGetFriend();
+                if (vk.error != "Пользователя с таким ID не существует")
+                {
+                    ID_User.Background = Brushes.White;           
+                    var tmp = vk.GetFriend();
+                    List_Friends.Items.Clear();
+                    foreach (var friend in tmp)
+                    {
+                        if (friend.Online == true)
+                        {
+                            List_Friends.Items.Add(friend.FirstName + " " + friend.LastName + "  ●");
+                        }
+                        else
+                        {
+                            List_Friends.Items.Add(friend.FirstName + " " + friend.LastName);
+                        }
+                    }
+                    var UserInfo = vk.GetInfoUser();
+                    Name.Content = UserInfo.FirstName + " " + UserInfo.LastName;
+                    Status.Text = UserInfo.Status;
+
+                    BitmapImage bitPhoto = new BitmapImage();
+                    bitPhoto.BeginInit();
+                    bitPhoto.UriSource = new Uri(UserInfo.PhotoPreviews.Photo200);
+                    bitPhoto.EndInit();
+                    Image_Photo.Stretch = Stretch.Fill;
+                    Image_Photo.Source = bitPhoto;
+
+                    Error.Content = vk.checkGetWallUser();
+                    List_Post.Items.Clear();
+                    var wall = vk.GetWallUser();
+                    foreach(var post in wall)
+                    {
+                        List_Post.Items.Add(post.Text + Environment.NewLine + "Дата: " + post.Date + "     Лайки: " + post.Likes.Count + "  Репосты: " + post.Reposts.Count + Environment.NewLine);
+                    }
+
+
+                }
+            }
+            else
+            {
+                ID_User.Text = "ID Пользователя";
+                ID_User.Background = Brushes.SkyBlue;
+            }
+        }
+
+        private void ID_User_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ID_User.Text = "";
+        }
+
     }
 }

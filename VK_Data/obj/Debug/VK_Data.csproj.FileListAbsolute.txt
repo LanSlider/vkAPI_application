@@ -19,3 +19,5 @@ D:\Student\SPP\VK_Data\VK_Data\bin\Debug\VkNet.xml
 D:\Student\SPP\VK_Data\VK_Data\bin\Debug\HtmlAgilityPack.dll
 D:\Student\SPP\VK_Data\VK_Data\bin\Debug\HtmlAgilityPack.pdb
 D:\Student\SPP\VK_Data\VK_Data\bin\Debug\HtmlAgilityPack.xml
+D:\Student\SPP\VK_Data\VK_Data\bin\Debug\Newtonsoft.Json.dll
+D:\Student\SPP\VK_Data\VK_Data\bin\Debug\Newtonsoft.Json.xml

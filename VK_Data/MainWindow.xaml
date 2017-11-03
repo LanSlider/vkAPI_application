@@ -13,22 +13,32 @@
     mc:Ignorable="d">
     <Grid>
         <Border
+            Width="204"
+            Height="204"
+            Margin="35,49,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            BorderBrush="#FFFDFAFA"
+            BorderThickness="2"
+            RenderTransformOrigin="0.5,0.51" />
+
+        <Border
+            Width="448"
+            Height="39"
+            Margin="10,462,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            BorderBrush="White"
+            BorderThickness="1"
+            CornerRadius="30" />
+
+        <Border
             Width="372"
             Height="311"
             Margin="495,190,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             BorderBrush="#FFFBF8F8"
-            BorderThickness="1"
-            CornerRadius="30" />
-
-        <Border
-            Width="210"
-            Height="223"
-            Margin="39,41,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            BorderBrush="#FFFDFAFA"
             BorderThickness="1"
             CornerRadius="30" />
 
@@ -58,7 +68,8 @@
             Margin="526,61,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Text="TextBox"
+            GotFocus="ID_User_GotFocus"
+            Text="ID Пользователя"
             TextWrapping="Wrap" />
         <Button
             x:Name="Button_ID"
@@ -69,26 +80,18 @@
             VerticalAlignment="Top"
             Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
             BorderBrush="White"
-            Click="button_Click"
+            Click="Button_ID_Click"
             Content="Принять"
             FontFamily="Curlz MT"
-            Foreground="White" />
+            Foreground="White"
+            IsEnabled="False" />
         <Image
-            x:Name="Image"
-            Width="173"
-            Height="189"
-            Margin="57,60,0,0"
+            x:Name="Image_Photo"
+            Width="200"
+            Height="200"
+            Margin="37,51,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top" />
-        <Label
-            x:Name="label_status"
-            Width="151"
-            Height="24"
-            Margin="69,286,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="Label"
-            Foreground="#FFF9F8F8" />
         <TextBox
             x:Name="Login"
             Width="125"
@@ -161,15 +164,6 @@
             FontFamily="Sitka Display"
             FontSize="22"
             Foreground="White" />
-        <Border
-            Width="332"
-            Height="251"
-            Margin="516,232,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Background="White"
-            BorderBrush="White"
-            BorderThickness="1" />
         <Label
             x:Name="label_name"
             Margin="267,42,0,0"
@@ -181,13 +175,80 @@
             Foreground="White" />
         <Label
             x:Name="label_friend"
-            Margin="267,160,0,0"
+            Margin="267,137,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Content="Friends"
             FontFamily="Sitka Display"
             FontSize="20"
             Foreground="White" />
+        <ListBox
+            x:Name="List_Friends"
+            Width="191"
+            Height="259"
+            Margin="267,177,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Focusable="False"
+            FontFamily="Segoe UI Light"
+            Foreground="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}" />
+        <Label
+            x:Name="label_eror"
+            Margin="27,460,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Error"
+            FontFamily="Sitka Display"
+            FontSize="20"
+            Foreground="White" />
+        <Label
+            x:Name="Error"
+            Width="343"
+            Height="25"
+            Margin="85,471,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content=""
+            FontFamily="Segoe UI Light"
+            Foreground="White" />
+        <Label
+            x:Name="Name"
+            Width="157"
+            Margin="285,82,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content=""
+            FontFamily="Segoe UI Light"
+            FontSize="14"
+            Foreground="White" />
+        <Label
+            x:Name="label_status"
+            Margin="33,269,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Status"
+            FontFamily="Sitka Display"
+            FontSize="20"
+            Foreground="#FFF7F7F7" />
+        <TextBlock
+            x:Name="Status"
+            Width="182"
+            Height="109"
+            Margin="46,309,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontFamily="Segoe UI Light"
+            Foreground="White"
+            TextWrapping="Wrap" />
+        <ListBox
+            x:Name="List_Post"
+            Width="332"
+            Height="252"
+            Margin="516,230,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontFamily="Segoe UI Light"
+            Foreground="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}" />
 
     </Grid>
 </Window>
