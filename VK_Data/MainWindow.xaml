@@ -83,8 +83,7 @@
             Click="Button_ID_Click"
             Content="Принять"
             FontFamily="Curlz MT"
-            Foreground="White"
-            IsEnabled="False" />
+            Foreground="White" />
         <Image
             x:Name="Image_Photo"
             Width="200"
@@ -101,7 +100,7 @@
             VerticalAlignment="Top"
             FontFamily="Segoe UI Light"
             GotFocus="Login_GotFocus"
-            Text="Логин"
+            Text="+375291736962"
             TextWrapping="Wrap" />
         <Button
             x:Name="Auth"
@@ -124,7 +123,7 @@
             VerticalAlignment="Top"
             FontFamily="Segoe UI Light"
             GotFocus="Password_GotFocus"
-            Password="Пароль" />
+            Password="123789654aA" />
         <Label
             x:Name="label_login"
             Width="54"
@@ -213,13 +212,13 @@
             Foreground="White" />
         <Label
             x:Name="Name"
-            Width="157"
+            Width="173"
             Margin="285,82,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Content=""
             FontFamily="Segoe UI Light"
-            FontSize="14"
+            FontSize="16"
             Foreground="White" />
         <Label
             x:Name="label_status"
@@ -249,6 +248,7 @@
             VerticalAlignment="Top"
             FontFamily="Segoe UI Light"
             Foreground="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}" />
+        <Label x:Name="updateTime" Content="" HorizontalAlignment="Left" Margin="285,16,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Light" Foreground="White" FontStyle="Italic"/>
 
     </Grid>
 </Window>

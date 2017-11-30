@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using VkNet;
 using VkNet.Enums.Filters;
 using VkNet.Exception;
-using VkNet.Enums;
+using System.Threading;
 
 namespace VK_Data
 {
@@ -34,13 +27,13 @@ namespace VK_Data
         public string error { get; set; }
         public Settings setting { get; set; }
 
+        private VkApi vkAPI = new VkApi();
+
         public VK()
         {
             appID = 6243960;
             setting = Settings.All;
         }
-
-        VkApi vkAPI = new VkApi();
         
         public string Auth()
         {
@@ -75,8 +68,8 @@ namespace VK_Data
 
         public ReadOnlyCollection<VkNet.Model.User> GetFriend()
         {
-            var temp = vkAPI.Friends.Get(userID, ProfileFields.FirstName | ProfileFields.LastName);
-            return temp;
+                var temp = vkAPI.Friends.Get(userID, ProfileFields.FirstName | ProfileFields.LastName);
+                return temp;            
         }
 
         public string checkGetInfoUser()
@@ -88,12 +81,32 @@ namespace VK_Data
                 return error;
 
             }
-            catch (VkApiException)
+            /*catch (VkApiException)
+            {
+                error = "Ошибка получения данных пользователя";
+                return error;
+            }*/
+            catch (InvalidParameterException)
             {
                 error = "Ошибка получения данных пользователя";
                 return error;
             }
         }
+
+        /*public string checkCountRequest()
+        {
+            try
+            {
+                var tmp = vkAPI.Users.Get("14534534", ProfileFields.All);
+                error = "";
+                return error;
+            }
+            catch(TooManyRequestsException)
+            {
+                error = "Слишком много запросов";
+                return error;
+            }
+        }*/
 
         public VkNet.Model.User GetInfoUser()
         {
@@ -131,14 +144,52 @@ namespace VK_Data
     public partial class MainWindow : Window
     {
         VK vk = new VK();
-        
+
+        DispatcherTimer timer = new DispatcherTimer();
+
         public MainWindow()
         {  
             InitializeComponent();
-
         }
 
-        private void Auth_Click(object sender, RoutedEventArgs e)
+        private async Task<UpdateData> UpdateData()
+        {
+            return await Task.Run(() =>
+            {
+                List<Thread> threadList = new List<Thread>();
+                var data = new UpdateData();
+
+                threadList.Add(new Thread(() => 
+                {
+                    data.friend = vk.GetFriend();
+                }));
+
+                threadList.Add(new Thread(() => 
+                {
+                    data.infoUser = vk.GetInfoUser();
+                    
+                }));
+
+                threadList.Add(new Thread(() =>
+                {
+                    data.wall = vk.GetWallUser();
+                }));         
+
+                foreach (Thread thread in threadList)
+                {
+                    thread.Start();
+                }
+
+                foreach (Thread thread in threadList)
+                {
+                    thread.Join();
+                }            
+                               
+                return data;
+            });
+        }
+
+        private async void Auth_Click(object sender, RoutedEventArgs e)
         {
             if (Login.IsEnabled)
             {   
@@ -149,6 +200,7 @@ namespace VK_Data
                     {
                         vk.email = Login.Text;
                         vk.password = Password.Password;
+
                         Error.Content = vk.Auth();                        
                         if (vk.error != "Неверные данные авторизации")
                         {      
@@ -199,56 +251,77 @@ namespace VK_Data
             Password.Password = "";
         }
 
-        private void Button_ID_Click(object sender, RoutedEventArgs e)
-        {
-            long temp;
-            if ((ID_User.Text != "") && (long.TryParse(ID_User.Text, out temp)))
+        private async void timer_tick(object sender, EventArgs e)
+        {       
+            List_Friends.Items.Clear();
+            List_Post.Items.Clear();
+
+            var result = await UpdateData();
+
+            foreach (var friend in result.friend)
             {
-                vk.userID = temp;
-                Error.Content =  vk.checkGetFriend();
-                if (vk.error != "Пользователя с таким ID не существует")
+                if (friend.Online == true)
                 {
-                    ID_User.Background = Brushes.White;           
-                    var tmp = vk.GetFriend();
-                    List_Friends.Items.Clear();
-                    foreach (var friend in tmp)
-                    {
-                        if (friend.Online == true)
-                        {
-                            List_Friends.Items.Add(friend.FirstName + " " + friend.LastName + "  ●");
-                        }
-                        else
-                        {
-                            List_Friends.Items.Add(friend.FirstName + " " + friend.LastName);
-                        }
-                    }
-                    var UserInfo = vk.GetInfoUser();
-                    Name.Content = UserInfo.FirstName + " " + UserInfo.LastName;
-                    Status.Text = UserInfo.Status;
-
-                    BitmapImage bitPhoto = new BitmapImage();
-                    bitPhoto.BeginInit();
-                    bitPhoto.UriSource = new Uri(UserInfo.PhotoPreviews.Photo200);
-                    bitPhoto.EndInit();
-                    Image_Photo.Stretch = Stretch.Fill;
-                    Image_Photo.Source = bitPhoto;
-
-                    Error.Content = vk.checkGetWallUser();
-                    List_Post.Items.Clear();
-                    var wall = vk.GetWallUser();
-                    foreach(var post in wall)
-                    {
-                        List_Post.Items.Add(post.Text + Environment.NewLine + "Дата: " + post.Date + "     Лайки: " + post.Likes.Count + "  Репосты: " + post.Reposts.Count + Environment.NewLine);
-                    }
-
-
+                    List_Friends.Items.Add(friend.FirstName + " " + friend.LastName + "  ●");
+                }
+                else
+                {
+                    List_Friends.Items.Add(friend.FirstName + " " + friend.LastName);
                 }
             }
-            else
+
+            foreach (var post in result.wall)
             {
-                ID_User.Text = "ID Пользователя";
-                ID_User.Background = Brushes.SkyBlue;
+                List_Post.Items.Add(post.Text + Environment.NewLine + "Дата: " + post.Date + "     Лайки: " + post.Likes.Count + "  Репосты: " + post.Reposts.Count + Environment.NewLine);
             }
+
+            updateTime.Content = System.DateTime.Now.ToLongTimeString();
+
+        }
+
+        private async void Button_ID_Click(object sender, RoutedEventArgs e)
+        {
+            long temp;
+            //Error.Content = vk.checkCountRequest();
+            //if (vk.error != "Слишком много запросов")
+            //{
+                if ((ID_User.Text != "") && (long.TryParse(ID_User.Text, out temp)))
+                {
+                    vk.userID = temp;
+                    Error.Content = vk.checkGetFriend();
+                    if (vk.error != "Пользователя с таким ID не существует")
+                    {
+                        ID_User.Background = Brushes.White;
+
+                        var data = await UpdateData();
+
+                        timer_tick(sender, e);
+
+                        Name.Content = data.infoUser.FirstName + " " + data.infoUser.LastName;
+                        Status.Text = data.infoUser.Status;
+
+                        BitmapImage bitPhoto = new BitmapImage();
+                        bitPhoto.BeginInit();
+                        bitPhoto.UriSource = new Uri(data.infoUser.PhotoPreviews.Photo200);
+                        bitPhoto.EndInit();
+
+                        Image_Photo.Stretch = Stretch.Fill;
+                        Image_Photo.Source = bitPhoto;
+                      
+                        Error.Content = vk.checkGetWallUser();
+
+                        timer.Tick += new EventHandler(timer_tick);
+                        timer.Interval = new TimeSpan(0, 0, 20);
+                        timer.Start();
+
+                    }
+                }
+                else
+                {
+                    ID_User.Text = "ID Пользователя";
+                    ID_User.Background = Brushes.SkyBlue;
+                }
+            //}
         }
 
         private void ID_User_GotFocus(object sender, RoutedEventArgs e)
