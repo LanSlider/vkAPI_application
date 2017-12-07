@@ -9,6 +9,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using VK_App;
 using System.Collections.Generic;
+using System.Net.Mail;
+using System.Net;
 
 namespace VK_Data
 {
@@ -54,18 +56,7 @@ namespace VK_Data
                     return data;
                 }*/
             });
-        }
-        
-
-        private void Login_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Login.Text = "";
-        }
-
-        private void Password_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Password.Password = "";
-        }
+        }        
 
         private async void timer_tick(object sender, EventArgs e)
         {       
@@ -90,7 +81,6 @@ namespace VK_Data
                 List_Error.Items.Add(error);
             }
 
-
             if (result.infoUser[2] == "True")     
                 Online.Foreground = System.Windows.Media.Brushes.GreenYellow;
             else
@@ -109,6 +99,7 @@ namespace VK_Data
                 var data = await UpdateData(Convert.ToInt32(ID_User.Text));
 
                 Online.Visibility = Visibility;
+                Button_Email.IsEnabled = true;
                 Name.Content = data.infoUser[0];
                 Status.Text = data.infoUser[1];
 
@@ -136,8 +127,65 @@ namespace VK_Data
 
         private void ID_User_GotFocus(object sender, RoutedEventArgs e)
         {
-            ID_User.Text = "";
+           ID_User.Text = "";
         }
 
+        private void Mail_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Mail.Text = "";
+        }
+
+        private async void Button_Email_Click(object sender, RoutedEventArgs e)
+        {
+            if ((Mail.Text != "Адрес email") && (Mail.Text != ""))
+            {
+                UpdateData data = await UpdateData(Convert.ToInt32(ID_User.Text));
+                TimeSend.Text = data.updateTime;
+
+                List_Error.Items.Clear();
+
+                MailAddress from = new MailAddress("bsuir.project.adm@gmail.com", "InfoUserVK");
+                try
+                {
+                    MailAddress to = new MailAddress(Mail.Text);
+
+                    MailMessage message = new MailMessage(from, to);
+
+                    message.Subject = "Информация о пользователе VK ";
+
+                    message.Body += " Имя: " + data.infoUser[0] + "\n \n";
+                    message.Body += " Онлайн: " + data.infoUser[2] + "\n \n";
+                    message.Body += " Статус: " + data.infoUser[1] + "\n \n";
+                    message.Body += " Список друзей: \n \n";
+
+                    foreach (string friend in data.friendList)
+                    {
+                        message.Body += "   " + friend + "\n";
+                    }
+
+                    message.Body += "\n Стена пользователя: \n";
+
+                    foreach (string post in data.wallList)
+                    {
+                        message.Body += post + "\n";
+                    }
+
+                    SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                    smtp.Credentials = new NetworkCredential("bsuir.project.adm@gmail.com", "Evolato3147");
+                    smtp.EnableSsl = true;
+                    await smtp.SendMailAsync(message);
+                    List_Error.Items.Add("Письмо было отправлено");
+                }
+                catch (Exception ex)
+                {
+                    List_Error.Items.Add("Некорректный e-mail");
+                }
+            }
+            else
+            {
+                Mail.Text = "ID Пользователя";
+                Mail.Background = System.Windows.Media.Brushes.SkyBlue;
+            }
+        }        
     }
 }

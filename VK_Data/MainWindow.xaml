@@ -51,16 +51,6 @@
             BorderBrush="#FFFFFEFE"
             BorderThickness="1"
             CornerRadius="30" />
-
-        <Border
-            Width="178"
-            Height="149"
-            Margin="689,11,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            BorderBrush="#FFFFFEFE"
-            BorderThickness="1"
-            CornerRadius="30" />
         <TextBox
             x:Name="ID_User"
             Width="125"
@@ -91,58 +81,6 @@
             Margin="37,51,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top" />
-        <TextBox
-            x:Name="Login"
-            Width="125"
-            Height="20"
-            Margin="714,42,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            FontFamily="Segoe UI Light"
-            GotFocus="Login_GotFocus"
-            Text="+375291736962"
-            TextWrapping="Wrap" />
-        <Button
-            x:Name="Auth"
-            Width="125"
-            Margin="714,120,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
-            BorderBrush="#FFFBFAFA"
-            Content="Войти"
-            FontFamily="Curlz MT"
-            Foreground="#FFF9F8F8" />
-        <PasswordBox
-            x:Name="Password"
-            Width="125"
-            Height="20"
-            Margin="714,86,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            FontFamily="Segoe UI Light"
-            GotFocus="Password_GotFocus"
-            Password="123789654aA" />
-        <Label
-            x:Name="label_login"
-            Width="54"
-            Height="30"
-            Margin="752,16,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="Login"
-            FontFamily="Sitka Display"
-            FontSize="16"
-            Foreground="#FFFDFDFD" />
-        <Label
-            x:Name="label_pass"
-            Margin="743,61,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="Password"
-            FontFamily="Sitka Display"
-            FontSize="16"
-            Foreground="#FFF9F7F7" />
         <Label
             x:Name="label_userID"
             Margin="555,32,0,0"
@@ -256,7 +194,60 @@
             Background="{x:Null}"
             BorderBrush="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
             Foreground="White" />
+        <Border
+        	Width="169"
+        	Height="147"
+        	Margin="698,25,0,0"
+        	HorizontalAlignment="Left"
+        	VerticalAlignment="Top"
+        	BorderBrush="#FFFFFEFE"
+        	BorderThickness="1"
+        	CornerRadius="30" >
+            <Label x:Name="label_TimeUpdate" Content="Время обновления" Margin="18,29,46,91" Foreground="White" FontSize="11" FontFamily="Segoe UI Light"/>
+        </Border>
         <Label x:Name="Online" Content="●" HorizontalAlignment="Left" Margin="427,75,0,0" VerticalAlignment="Top" Height="40" FontSize="24" Foreground="#FFCFCFCF" FontWeight="Bold" Visibility="Hidden"/>
+        <TextBox
+        	x:Name="Mail"
+        	Width="125"
+        	Height="20"
+        	Margin="723,107,0,0"
+        	HorizontalAlignment="Left"
+        	VerticalAlignment="Top"
+        	GotFocus="Mail_GotFocus"
+        	Text="Адрес email"
+        	TextWrapping="Wrap" />
+        <Button
+        	x:Name="Button_Email"
+        	Width="125"
+        	Height="20"
+        	Margin="723,137,0,0"
+        	HorizontalAlignment="Left"
+        	VerticalAlignment="Top"
+        	Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
+        	BorderBrush="White"
+        	Click="Button_Email_Click"
+        	Content="Отправить"
+        	FontFamily="Curlz MT"
+        	Foreground="White" IsEnabled="False" />
+        <Label
+        	x:Name="label_mail"
+        	Margin="742,29,0,0"
+        	HorizontalAlignment="Left"
+        	VerticalAlignment="Top"
+        	Background="{x:Null}"
+        	Content="MailSender"
+        	FontFamily="Sitka Display"
+        	FontSize="16"
+        	Foreground="White" />
+        <TextBox
+        	x:Name="TimeSend"
+        	Width="125"
+        	Height="20"
+        	Margin="723,82,0,0"
+        	HorizontalAlignment="Left"
+        	VerticalAlignment="Top"
+        	GotFocus="ID_User_GotFocus"
+        	TextWrapping="Wrap" Background="{x:Null}" Foreground="#FFEEEEEE" IsEnabled="False" />
 
     </Grid>
 </Window>
