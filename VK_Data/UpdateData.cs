@@ -1,23 +1,28 @@
-﻿using System;
+﻿using System.Runtime.Serialization;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VkNet;
-using VkNet.Enums.Filters;
-using VkNet.Exception;
-using VkNet.Enums;
-using System.Collections.ObjectModel;
+using System.Drawing;
 
-namespace VK_Data
+namespace VK_App
 {
+    [DataContract]
     class UpdateData
     {
-        public ReadOnlyCollection<VkNet.Model.User> friend { get; set; }
-        public VkNet.Model.User infoUser { get; set; }
-        public BitmapImage bitPhoto { get; set; }
-        public ReadOnlyCollection<VkNet.Model.Post> wall { get; set; }
+        [DataMember]
+        public string[] infoUser { get; set; }
 
+        [DataMember]
+        public Bitmap bitPhoto { get; set; }
+
+        [DataMember]
+        public List<string> wallList { get; set; }
+
+        [DataMember]
+        public List<string> friendList { get; set; }
+
+        [DataMember]
+        public string updateTime { get; set; }
+
+        [DataMember]
+        public List<string> errorList { get; set; }        
     }
 }

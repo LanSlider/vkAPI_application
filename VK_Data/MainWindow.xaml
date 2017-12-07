@@ -110,7 +110,6 @@
             VerticalAlignment="Top"
             Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
             BorderBrush="#FFFBFAFA"
-            Click="Auth_Click"
             Content="Войти"
             FontFamily="Curlz MT"
             Foreground="#FFF9F8F8" />
@@ -192,6 +191,16 @@
             FontFamily="Segoe UI Light"
             Foreground="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}" />
         <Label
+            x:Name="Name"
+            Width="173"
+            Margin="278,82,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content=""
+            FontFamily="Segoe UI Light"
+            FontSize="16"
+            Foreground="White" />
+        <Label
             x:Name="label_eror"
             Margin="27,460,0,0"
             HorizontalAlignment="Left"
@@ -199,26 +208,6 @@
             Content="Error"
             FontFamily="Sitka Display"
             FontSize="20"
-            Foreground="White" />
-        <Label
-            x:Name="Error"
-            Width="343"
-            Height="25"
-            Margin="85,471,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content=""
-            FontFamily="Segoe UI Light"
-            Foreground="White" />
-        <Label
-            x:Name="Name"
-            Width="173"
-            Margin="285,82,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content=""
-            FontFamily="Segoe UI Light"
-            FontSize="16"
             Foreground="White" />
         <Label
             x:Name="label_status"
@@ -248,7 +237,26 @@
             VerticalAlignment="Top"
             FontFamily="Segoe UI Light"
             Foreground="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}" />
-        <Label x:Name="updateTime" Content="" HorizontalAlignment="Left" Margin="285,16,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Light" Foreground="White" FontStyle="Italic"/>
+        <Label
+            x:Name="updateTime"
+            Margin="285,16,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content=""
+            FontFamily="Segoe UI Light"
+            FontStyle="Italic"
+            Foreground="White" />
+        <ListBox
+            x:Name="List_Error"
+            Width="343"
+            Height="25"
+            Margin="85,470,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{x:Null}"
+            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
+            Foreground="White" />
+        <Label x:Name="Online" Content="●" HorizontalAlignment="Left" Margin="427,75,0,0" VerticalAlignment="Top" Height="40" FontSize="24" Foreground="#FFCFCFCF" FontWeight="Bold" Visibility="Hidden"/>
 
     </Grid>
 </Window>
